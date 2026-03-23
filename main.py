@@ -33,6 +33,20 @@ def parse_args():
         default=5,
         help="Number of folds for TimeSeriesSplit",
     )
+    parser.add_argument(
+        "--lags",
+        type=int,
+        nargs="+",
+        default=[1, 2, 3, 5, 7],
+        help="Lag values to create, e.g. --lags 1 2 3 5 7",
+    )
+    parser.add_argument(
+        "--windows",
+        type=int,
+        nargs="+",
+        default=[3, 5, 7],
+        help="Rolling window sizes, e.g. --windows 3 5 7",
+    )
     return parser.parse_args()
 
 
@@ -46,6 +60,8 @@ def main():
         data_dir=args.data_dir,
         test_size=args.test_size,
         n_splits=args.n_splits,
+        lags=args.lags,
+        windows=args.windows,
     )
 
     train_metrics = results["train_metrics"]
