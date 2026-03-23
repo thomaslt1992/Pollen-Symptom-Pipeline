@@ -1,6 +1,23 @@
 from sklearn.neighbors import NearestNeighbors
 import numpy as np
 
+def bayesian_shrinkage_local(df, value_col, samples_col, window=7, k=20):
+    df_copy = df.copy()
+
+    local_mean = (
+        df_copy[value_col]
+        .shift(1)
+        .rolling(window=window, min_periods=1)
+        .mean()
+    )
+
+    n = df_copy[samples_col].fillna(0)
+    weight = n / (n + k)
+
+    df_copy[value_col] = weight * df_copy[value_col] + (1 - weight) * local_mean
+
+    return df_copy
+
 def knn_fill_na(df, column, n_neighbors=5):
 
     df_copy = df.copy()
