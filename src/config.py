@@ -5,4 +5,5 @@ DEFAULT_FORBIDDEN_CURRENT = [
     "averageOverallScoreWithMedication",
     "standardDeviationWithMedication",
     "averageOverallScoreWithoutMedication",
-    "standardDeviationWithoutMedication",]
+    "standardDeviationWithoutMedication",
+    "samples",]
