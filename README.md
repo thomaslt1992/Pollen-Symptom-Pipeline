@@ -19,6 +19,7 @@ This is an evolving project. Planned extensions include:
 ---
 
 ## Project Structure
+```text
 src/
 │
 ├── pipeline.py # main pipeline logic
@@ -34,7 +35,7 @@ pipeline.ipynb # optional notebook usage
 
 data/ # local (ignored, confidential)
 outputs/ # saved results
-
+```
 ---
 
 ## How to Run (Command Line)
