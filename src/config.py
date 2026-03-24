@@ -3,7 +3,7 @@
 
 DEFAULT_LAGS = [1, 2, 3, 5, 7]
 DEFAULT_WINDOWS = [3, 5, 7]
-
+DEFAULT_SELECTED_POLLEN = ["birch", "poac"]
 DEFAULT_FORBIDDEN_CURRENT = [
     "averageoverallscorewithmedication",
     "standarddeviationwithmedication",

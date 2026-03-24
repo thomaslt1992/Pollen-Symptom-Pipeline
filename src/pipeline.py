@@ -1,6 +1,11 @@
 from pathlib import Path
 
-from src.config import DEFAULT_FORBIDDEN_CURRENT, DEFAULT_LAGS, DEFAULT_WINDOWS
+from src.config import (
+    DEFAULT_FORBIDDEN_CURRENT,
+    DEFAULT_LAGS,
+    DEFAULT_WINDOWS,
+    DEFAULT_SELECTED_POLLEN,
+)
 from src.data_loader import load_and_merge_data
 from src.features import prepare_features
 from src.model import evaluate_model, get_selected_features, train_lasso_model
@@ -13,10 +18,14 @@ def run_pipeline(
     lags=DEFAULT_LAGS,
     windows=DEFAULT_WINDOWS,
     forbidden_current=DEFAULT_FORBIDDEN_CURRENT,
+    selected_pollen=DEFAULT_SELECTED_POLLEN,
 ):
     data_dir = Path(data_dir)
 
-    df = load_and_merge_data(data_dir)
+    df = load_and_merge_data(
+        data_dir=data_dir,
+        selected_pollen=selected_pollen,
+    )
 
     X, y = prepare_features(
         df=df,

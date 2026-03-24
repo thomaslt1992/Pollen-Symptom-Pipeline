@@ -10,5 +10,4 @@ data/
 
 *.ipynb
 
-outputs/metrics.txt
-outputs/selected_features.csv
+outputs/
