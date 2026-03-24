@@ -133,19 +133,14 @@ This step is applied **before lag and rolling feature creation**, ensuring that 
 From the project root:
 
 ```bash
-python main.py --data-dir data --output-dir outputs --test-size 0.2 --n-splits 5 --lags 1 2 3 5 7 12 --windows 3 5 7 10
+python main.py --data-dir data --output-dir outputs
 ```
-
-The list can be as big as we want
 
 ## Optional arguments
+```bash
+python main.py --data-dir data --output-dir outputs --test-size 0.2 --n-splits 5 --lags 1 2 3 5 7 12 --windows 3 5 7 10
 ```
-python main.py \
-  --data-dir data \
-  --output-dir outputs \
-  --test-size 0.2 \
-  --n-splits 5
-```
+The list can be as big as we want
 
 Outputs
 metrics (R², RMSE, MAE)
