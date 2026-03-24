@@ -74,7 +74,7 @@ Instead of removing outliers, the pipeline applies a **Bayesian-style shrinkage*
 Daily symptom scores are estimates of an underlying true population value.  
 When `samples` is small, the variance of this estimate is high:
 
-`Var(y_t) ∝ 1 / n_t`
+Var(y<sub>t</sub>) ∝ 1 / n<sub>t</sub>
 
 where:
 - \( y_t \) = observed symptom score at time \( t \)  
