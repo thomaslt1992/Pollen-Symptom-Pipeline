@@ -73,14 +73,13 @@ Instead of removing outliers, the pipeline applies a **Bayesian-style shrinkage*
 
 Daily symptom scores are estimates of an underlying true population value.  
 When `samples` is small, the variance of this estimate is high:
-
 Var(y<sub>t</sub>) ∝ 1 / n<sub>t</sub>
 
 where:
-- \( y_t \) = observed symptom score at time \( t \)  
-- \( n_t \) = number of samples (patients)
+- y<sub>t</sub> = observed symptom score at time t  
+- n<sub>t</sub> = number of samples (patients)
 
-Low \( n_t \) → unreliable estimate → potential extreme values.
+Low n<sub>t</sub> → unreliable estimate → potential extreme values.
 
 ---
 
@@ -88,41 +87,32 @@ Low \( n_t \) → unreliable estimate → potential extreme values.
 
 Each observation is shrunk toward a **local historical mean**:
 
-\[
-\mu_t = \frac{1}{w} \sum_{i=1}^{w} y_{t-i}
-\]
+μ<sub>t</sub> = (1 / w) * Σ y<sub>t-i</sub>
 
 where:
-- \( \mu_t \) = local mean over a rolling window of size \( w \)  
+- μ<sub>t</sub> = local mean over a rolling window of size w  
 - only past values are used to avoid leakage  
 
 The adjusted value is computed as:
 
-\[
-\tilde{y}_t = \frac{n_t}{n_t + k} \cdot y_t + \frac{k}{n_t + k} \cdot \mu_t
-\]
+ỹ<sub>t</sub> = (n<sub>t</sub> / (n<sub>t</sub> + k)) * y<sub>t</sub>  
+              + (k / (n<sub>t</sub> + k)) * μ<sub>t</sub>
 
 where:
-- \( \tilde{y}_t \) = smoothed symptom score  
-- \( n_t \) = number of samples  
-- \( k \) = shrinkage parameter (controls smoothing strength)
-
+- ỹ<sub>t</sub> = smoothed symptom score  
+- n<sub>t</sub> = number of samples  
+- k = shrinkage parameter (controls smoothing strength)
 ---
 
 ### Interpretation
 
-- If \( n_t \gg k \):  
-  \[
-  \tilde{y}_t \approx y_t
-  \]
+- If n<sub>t</sub> ≫ k:  
+  ỹ<sub>t</sub> ≈ y<sub>t</sub>  
   → high confidence, minimal adjustment  
 
-- If \( n_t \ll k \):  
-  \[
-  \tilde{y}_t \approx \mu_t
-  \]
+- If n<sub>t</sub> ≪ k:  
+  ỹ<sub>t</sub> ≈ μ<sub>t</sub>  
   → low confidence, strong smoothing  
-
 ---
 
 ### Properties
@@ -143,8 +133,10 @@ This step is applied **before lag and rolling feature creation**, ensuring that 
 From the project root:
 
 ```bash
-python main.py --data-dir data --output-dir outputs
+python main.py --data-dir data --output-dir outputs --test-size 0.2 --n-splits 5 --lags 1 2 3 5 7 12 --windows 3 5 7 10
 ```
+
+The list can be as big as we want
 
 ## Optional arguments
 ```
