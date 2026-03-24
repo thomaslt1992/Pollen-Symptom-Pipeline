@@ -166,7 +166,13 @@ selected features (from Lasso)
 ```
 from src.pipeline import run_pipeline
 
-results = run_pipeline(data_dir="data")
+results = run_pipeline(
+    data_dir="data",
+    test_size=0.2,
+    n_splits=5,
+    lags=[1,2,3,5,7,10],
+    windows=[3,5,7],
+)
 
 results["train_metrics"]
 results["test_metrics"]
@@ -186,3 +192,4 @@ DEFAULT_FORBIDDEN_CURRENT = [
     "standardDeviationWithoutMedication",
     "samples",
 ]
+```

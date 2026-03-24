@@ -1,26 +1,35 @@
 import numpy as np
 import pandas as pd
 
-from src.preprocessing import interpolate_column, create_lags, create_past_averages
-from src.preprocessing import bayesian_shrinkage_local
+from src.preprocessing import (
+    bayesian_shrinkage_local,
+    interpolate_column,
+    create_lags,
+    create_past_averages,
+)
+
 
 def prepare_features(df, lags, windows, forbidden_current):
     df = df.copy()
 
-    df = interpolate_column(df, "POAC")
+    df = interpolate_column(df, "poac")
     df = interpolate_column(df, "birch")
 
-    #This will overwrite the original columns, but that's fine since we won't be using them directly in the model. 
-    # The smoothed versions will be more informative and less noisy for feature engineering.
-    df = bayesian_shrinkage_local(df,value_col="averageOverallScoreWithMedication",samples_col="samples",window=7,k=20,)
+    df = bayesian_shrinkage_local(
+        df,
+        value_col="averageoverallscorewithmedication",
+        samples_col="samples",
+        window=7,
+        k=20,
+    )
 
-    df = create_lags(df, "averageOverallScoreWithMedication", lags)
+    df = create_lags(df, "averageoverallscorewithmedication", lags)
     df = create_lags(df, "birch", lags)
-    df = create_lags(df, "POAC", lags)
+    df = create_lags(df, "poac", lags)
 
-    df = create_past_averages(df, "averageOverallScoreWithMedication", windows)
+    df = create_past_averages(df, "averageoverallscorewithmedication", windows)
     df = create_past_averages(df, "birch", windows)
-    df = create_past_averages(df, "POAC", windows)
+    df = create_past_averages(df, "poac", windows)
 
     max_lag = max(lags + windows)
     df = df.iloc[max_lag:].reset_index(drop=True)
@@ -30,7 +39,7 @@ def prepare_features(df, lags, windows, forbidden_current):
     df["date"] = pd.to_datetime(df["date"])
     df = df.sort_values("date").reset_index(drop=True)
 
-    target_col = "averageOverallScoreWithMedication"
+    target_col = "averageoverallscorewithmedication"
     y = df[target_col].copy()
 
     X = df.drop(columns=forbidden_current, errors="ignore").copy()
