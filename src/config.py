@@ -3,7 +3,7 @@
 
 DEFAULT_LAGS = [1, 2, 3, 5, 7]
 DEFAULT_WINDOWS = [3, 5, 7]
-DEFAULT_SELECTED_POLLEN = ["birch", "poac"]
+DEFAULT_SELECTED_POLLEN = ["birch", "poac","ragweed","ambrosia"]
 DEFAULT_FORBIDDEN_CURRENT = [
     "averageoverallscorewithmedication",
     "standarddeviationwithmedication",
@@ -11,3 +11,10 @@ DEFAULT_FORBIDDEN_CURRENT = [
     "standarddeviationwithoutmedication",
     "samples",
 ]
+
+POLLEN_ALIASES = {
+    "poac": "grasses",
+    "grass": "grasses",
+    "grasses": "grasses",
+    "birch": "birch",
+}

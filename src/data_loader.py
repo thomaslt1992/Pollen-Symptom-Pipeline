@@ -1,5 +1,6 @@
 from pathlib import Path
 import pandas as pd
+from src.config import POLLEN_ALIASES
 
 
 def load_pollen_seasons(data_dir, selected_pollen=None):
@@ -17,6 +18,7 @@ def load_pollen_seasons(data_dir, selected_pollen=None):
     for file in ps_files:
         df = pd.read_csv(file)
         df.columns = df.columns.str.strip().str.lower()
+        df["type"] = df["type"].map(POLLEN_ALIASES).fillna(df["type"])
 
         required_cols = ["type", "seasons", "st.jd", "en.jd"]
         missing = [col for col in required_cols if col not in df.columns]
@@ -24,6 +26,7 @@ def load_pollen_seasons(data_dir, selected_pollen=None):
             raise ValueError(f"{file.name} is missing columns: {missing}")
 
         df["type"] = df["type"].astype(str).str.strip().str.lower()
+        df["type"] = df["type"].map(POLLEN_ALIASES).fillna(df["type"])
         df["seasons"] = pd.to_numeric(df["seasons"], errors="coerce")
         df["st.jd"] = pd.to_numeric(df["st.jd"], errors="coerce")
         df["en.jd"] = pd.to_numeric(df["en.jd"], errors="coerce")
@@ -34,8 +37,11 @@ def load_pollen_seasons(data_dir, selected_pollen=None):
     ps_df = ps_df.dropna(subset=["type", "seasons", "st.jd", "en.jd"]).copy()
 
     if selected_pollen is not None:
-        selected_pollen = [p.strip().lower() for p in selected_pollen]
-        ps_df = ps_df[ps_df["type"].isin(selected_pollen)].copy()
+        selected_pollen = [
+        POLLEN_ALIASES.get(p.strip().lower(), p.strip().lower())
+        for p in selected_pollen
+    ]
+    ps_df = ps_df[ps_df["type"].isin(selected_pollen)].copy()
 
     ps_df = ps_df.drop_duplicates(subset=["type", "seasons"]).reset_index(drop=True)
 
@@ -53,13 +59,14 @@ def add_pollen_season_flags(df, ps_df, selected_pollen):
     df["season_year"] = df["date"].dt.year
     df["day_of_year"] = df["date"].dt.dayofyear
 
-    selected_pollen = [p.strip().lower() for p in selected_pollen]
+    selected_pollen = [POLLEN_ALIASES.get(p.strip().lower(), p.strip().lower()) for p in selected_pollen]
 
     for pollen_type in selected_pollen:
         season_info = ps_df[ps_df["type"] == pollen_type].copy()
 
         if season_info.empty:
-            raise ValueError(f"No pollen season data found for '{pollen_type}'")
+            print(f"Warning: no pollen season data found for '{pollen_type}', skipping.")
+            continue
 
         season_map = season_info.rename(
             columns={
