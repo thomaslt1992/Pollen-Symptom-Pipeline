@@ -44,14 +44,6 @@ def knn_fill_na(df, column, n_neighbors=5):
 def create_lags(df, column, lags):
     """
     Create lagged versions of a column.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-    column : str
-        Column to lag
-    lags : list[int]
-        List of lag values
     """
 
     df_copy = df.copy()
@@ -64,12 +56,7 @@ def create_lags(df, column, lags):
 
 def create_past_averages(df, column, windows):
     """
-    Parameters
-    ----------
-    df : pandas.DataFrame
-    column : str
-        Column to compute averages from
-    windows : list[int]
+    Create past average features for a column.
     """
 
     df_copy = df.copy()
@@ -88,6 +75,9 @@ def interpolate_column(df, column, date_col="date"):
 
     if date_col in df_copy.columns:
         df_copy = df_copy.sort_values(date_col).reset_index(drop=True)
+    else:
+        print("Warning: date column not found in DataFrame. Interpolation will be done without sorting.")
+        return df_copy
 
     df_copy[column] = df_copy[column].interpolate(method="linear", limit_direction="both")
 
