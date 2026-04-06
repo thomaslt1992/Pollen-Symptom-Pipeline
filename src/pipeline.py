@@ -12,9 +12,6 @@ from src.features import prepare_features
 from src.model import evaluate_model, get_selected_features, train_lasso_model
 from src.model import get_last_n_days_predictions
 
-DAYS = 90
-
-
 def run_pipeline(
     data_dir="data",
     test_size=0.2,
@@ -58,7 +55,7 @@ def run_pipeline(
     X=X,
     y=y,
     model=model,
-    days=90,)
+    days=DAYS,)
 
     return {
     "df": df,

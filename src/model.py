@@ -96,4 +96,8 @@ def get_last_n_days_predictions(df, X, y, model, days=90):
         "predicted": y_pred_last
     })
 
+    season_cols = [col for col in df_last.columns if col.endswith("_in_season")]
+    for col in season_cols:
+        results_df[col] = df_last[col].values
+
     return results_df

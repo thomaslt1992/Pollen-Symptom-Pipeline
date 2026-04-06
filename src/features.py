@@ -11,23 +11,24 @@ from src.preprocessing import (
 
 def prepare_features(df, lags, windows, forbidden_current):
     df = df.copy()
-
+    if "averageoverallscorewithmedication" in df.columns:
+        df = df.rename(columns={"averageoverallscorewithmedication": "symptom_score"})
     df = interpolate_column(df, "poac")
     df = interpolate_column(df, "birch")
 
     df = bayesian_shrinkage_local(
         df,
-        value_col="averageoverallscorewithmedication",
+        value_col="symptom_score",
         samples_col="samples",
         window=7,
         k=20,
     )
 
-    df = create_lags(df, "averageoverallscorewithmedication", lags)
+    df = create_lags(df, "symptom_score", lags)
     df = create_lags(df, "birch", lags)
     df = create_lags(df, "poac", lags)
 
-    df = create_past_averages(df, "averageoverallscorewithmedication", windows)
+    df = create_past_averages(df, "symptom_score", windows)
     df = create_past_averages(df, "birch", windows)
     df = create_past_averages(df, "poac", windows)
 
@@ -39,7 +40,7 @@ def prepare_features(df, lags, windows, forbidden_current):
     df["date"] = pd.to_datetime(df["date"])
     df = df.sort_values("date").reset_index(drop=True)
 
-    target_col = "averageoverallscorewithmedication"
+    target_col = "symptom_score"
     y = df[target_col].copy()
 
     X = df.drop(columns=forbidden_current, errors="ignore").copy()
