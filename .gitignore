@@ -11,3 +11,5 @@ data/
 *.ipynb
 
 outputs/
+
+TODO.txt
