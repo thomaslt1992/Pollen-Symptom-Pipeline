@@ -5,10 +5,14 @@ from src.config import (
     DEFAULT_LAGS,
     DEFAULT_WINDOWS,
     DEFAULT_SELECTED_POLLEN,
+    DAYS,
 )
 from src.data_loader import load_and_merge_data
 from src.features import prepare_features
 from src.model import evaluate_model, get_selected_features, train_lasso_model
+from src.model import get_last_n_days_predictions
+
+DAYS = 90
 
 
 def run_pipeline(
@@ -27,12 +31,11 @@ def run_pipeline(
         selected_pollen=selected_pollen,
     )
 
-    X, y = prepare_features(
-        df=df,
-        lags=lags,
-        windows=windows,
-        forbidden_current=forbidden_current,
-    )
+    X, y, df_model = prepare_features(
+    df=df,
+    lags=lags,
+    windows=windows,
+    forbidden_current=forbidden_current)
 
     model, X_train, X_test, y_train, y_test, y_pred_train, y_pred_test = train_lasso_model(
         X=X,
@@ -50,18 +53,26 @@ def run_pipeline(
 
     selected_features = get_selected_features(model, X_train.columns)
 
+    forecast_df = get_last_n_days_predictions(
+    df=df_model,
+    X=X,
+    y=y,
+    model=model,
+    days=90,)
+
     return {
-        "df": df,
-        "X": X,
-        "y": y,
-        "model": model,
-        "X_train": X_train,
-        "X_test": X_test,
-        "y_train": y_train,
-        "y_test": y_test,
-        "y_pred_train": y_pred_train,
-        "y_pred_test": y_pred_test,
-        "train_metrics": train_metrics,
-        "test_metrics": test_metrics,
-        "selected_features": selected_features,
-    }
+    "df": df,
+    "df_model": df_model,
+    "X": X,
+    "y": y,
+    "model": model,
+    "X_train": X_train,
+    "X_test": X_test,
+    "y_train": y_train,
+    "y_test": y_test,
+    "y_pred_train": y_pred_train,
+    "y_pred_test": y_pred_test,
+    "train_metrics": train_metrics,
+    "test_metrics": test_metrics,
+    "selected_features": selected_features,
+    "forecast_df": forecast_df,}

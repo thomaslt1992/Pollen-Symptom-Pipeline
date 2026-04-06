@@ -12,6 +12,8 @@ DEFAULT_FORBIDDEN_CURRENT = [
     "samples",
 ]
 
+DAYS = 90
+
 POLLEN_ALIASES = {
     "poac": "grasses",
     "grass": "grasses",

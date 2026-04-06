@@ -5,7 +5,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-
+from src.config import DAYS
 
 def train_lasso_model(X, y, test_size=0.2, n_splits=5):
     split_idx = int(len(X) * (1 - test_size))
@@ -75,3 +75,25 @@ def bayesian_shrinkage_local(df, value_col, samples_col, window=7, k=20):
     df_copy[value_col] = weight * df_copy[value_col] + (1 - weight) * local_mean
 
     return df_copy
+
+def get_last_n_days_predictions(df, X, y, model, days=90):
+    df_copy = df.copy()
+
+    df_copy["date"] = pd.to_datetime(df_copy["date"])
+    cutoff_date = df_copy["date"].max() - pd.Timedelta(days=days)
+
+    mask = df_copy["date"] >= cutoff_date
+
+    df_last = df_copy.loc[mask].reset_index(drop=True)
+    X_last = X.loc[mask].reset_index(drop=True)
+    y_last = y.loc[mask].reset_index(drop=True)
+
+    y_pred_last = model.predict(X_last)
+
+    results_df = pd.DataFrame({
+        "date": df_last["date"],
+        "actual": y_last,
+        "predicted": y_pred_last
+    })
+
+    return results_df

@@ -47,7 +47,9 @@ def prepare_features(df, lags, windows, forbidden_current):
     X = X.select_dtypes(include=[np.number]).copy()
 
     valid_idx = X.dropna().index.intersection(y.dropna().index)
+
+    df_model = df.loc[valid_idx].reset_index(drop=True)
     X = X.loc[valid_idx].reset_index(drop=True)
     y = y.loc[valid_idx].reset_index(drop=True)
 
-    return X, y
+    return X, y, df_model
